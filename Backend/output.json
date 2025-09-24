@@ -1,0 +1,286 @@
+{
+  "TDS-194": [
+    [
+      {
+        "0": "SR. NO.",
+        "1": "QUARTER",
+        "2": "DATE OF PAYMENT/CREDIT",
+        "3": null,
+        "4": "AMOUNT PAID/CREDITED",
+        "5": null,
+        "6": "TDS DEDUCTED",
+        "7": "TDS DEPOSITED",
+        "8": null,
+        "9": null,
+        "10": "STATUS"
+      },
+      {
+        "0": "1",
+        "1": "Q4(Jan-Mar)",
+        "2": "10/03/2025",
+        "3": null,
+        "4": "32",
+        "5": null,
+        "6": "0",
+        "7": "0",
+        "8": null,
+        "9": null,
+        "10": "Active"
+      }
+    ]
+  ],
+  "SFT-015": [
+    [
+      {
+        "0": "SR. NO.",
+        "1": "REPORTED ON",
+        "2": "DIVIDEND AMOUNT",
+        "3": "STATUS",
+        "4": null,
+        "5": null,
+        "6": null,
+        "7": null
+      },
+      {
+        "0": "1",
+        "1": "07/05/2025",
+        "2": "32",
+        "3": "Active",
+        "4": null,
+        "5": null,
+        "6": null,
+        "7": null
+      }
+    ]
+  ],
+  "SFT-016(SB)": [
+    [
+      {
+        "0": "SR. NO.",
+        "1": "REPORTED ON",
+        "2": "ACCOUNT NUMBER",
+        "3": null,
+        "4": "ACCOUNT TYPE",
+        "5": null,
+        "6": "INTEREST AMOUNT",
+        "7": null,
+        "8": "STATUS",
+        "9": null
+      },
+      {
+        "0": "1",
+        "1": "28/05/2025",
+        "2": "1109162000001460-0",
+        "3": null,
+        "4": "Saving",
+        "5": null,
+        "6": "267",
+        "7": null,
+        "8": "Active",
+        "9": null
+      },
+      {
+        "0": "2",
+        "1": "28/05/2025",
+        "2": "1109153000002596-0",
+        "3": null,
+        "4": "Saving",
+        "5": null,
+        "6": "260",
+        "7": null,
+        "8": "Active",
+        "9": null
+      }
+    ],
+    [
+      {
+        "0": "SR. NO.",
+        "1": "REPORTED ON",
+        "2": "ACCOUNT NUMBER",
+        "3": null,
+        "4": "ACCOUNT TYPE",
+        "5": null,
+        "6": "INTEREST AMOUNT",
+        "7": null,
+        "8": "STATUS",
+        "9": null
+      },
+      {
+        "0": "1",
+        "1": "22/05/2025",
+        "2": "00000037296564817",
+        "3": null,
+        "4": "Saving",
+        "5": null,
+        "6": "402",
+        "7": null,
+        "8": "Active",
+        "9": null
+      }
+    ],
+    [
+      {
+        "0": "SR. NO.",
+        "1": "REPORTED ON",
+        "2": "ACCOUNT NUMBER",
+        "3": null,
+        "4": "ACCOUNT TYPE",
+        "5": null,
+        "6": "INTEREST AMOUNT",
+        "7": null,
+        "8": "STATUS",
+        "9": null
+      },
+      {
+        "0": "1",
+        "1": "29/05/2025",
+        "2": "77780101039209",
+        "3": null,
+        "4": "Saving",
+        "5": null,
+        "6": "84",
+        "7": null,
+        "8": "Active",
+        "9": null
+      }
+    ]
+  ],
+  "SFT-18(Pur)": [
+    [
+      {
+        "0": "SR. NO.",
+        "1": "QUARTER",
+        "2": "CLIENT ID",
+        "3": null,
+        "4": "AMC NAME (CODE)",
+        "5": null,
+        "6": "HOLDER FLAG",
+        "7": "TOTAL PURCHASE AMOUNT",
+        "8": "TOTAL SALES VALUE",
+        "9": null,
+        "10": "STATUS"
+      },
+      {
+        "0": "1",
+        "1": "Q4(Jan-Mar)",
+        "2": "91095945605",
+        "3": null,
+        "4": "MOTILAL OSWAL MUTUAL\nFUND(127)",
+        "5": null,
+        "6": "First",
+        "7": "14,999",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      },
+      {
+        "0": "2",
+        "1": "Q3(Oct-Dec)",
+        "2": "91095945605",
+        "3": null,
+        "4": "MOTILAL OSWAL MUTUAL\nFUND(127)",
+        "5": null,
+        "6": "First",
+        "7": "5,000",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      }
+    ],
+    [
+      {
+        "0": "SR. NO.",
+        "1": "QUARTER",
+        "2": "CLIENT ID",
+        "3": null,
+        "4": "AMC NAME (CODE)",
+        "5": null,
+        "6": "HOLDER FLAG",
+        "7": "TOTAL PURCHASE AMOUNT",
+        "8": "TOTAL SALES VALUE",
+        "9": null,
+        "10": "STATUS"
+      },
+      {
+        "0": "1",
+        "1": "Q4(Jan-Mar)",
+        "2": "77719694583",
+        "3": null,
+        "4": "JM Financial Mutual\nFund(105)",
+        "5": null,
+        "6": "First",
+        "7": "14,999",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      }
+    ],
+    [
+      {
+        "0": "SR. NO.",
+        "1": "QUARTER",
+        "2": "CLIENT ID",
+        "3": null,
+        "4": "AMC NAME (CODE)",
+        "5": null,
+        "6": "HOLDER FLAG",
+        "7": "TOTAL PURCHASE AMOUNT",
+        "8": "TOTAL SALES VALUE",
+        "9": null,
+        "10": "STATUS"
+      },
+      {
+        "0": "1",
+        "1": "Q4(Jan-Mar)",
+        "2": "51042261365",
+        "3": null,
+        "4": "Quant MF(166)",
+        "5": null,
+        "6": "First",
+        "7": "3,000",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      },
+      {
+        "0": "2",
+        "1": "Q3(Oct-Dec)",
+        "2": "51042261365",
+        "3": null,
+        "4": "Quant MF(166)",
+        "5": null,
+        "6": "First",
+        "7": "3,000",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      },
+      {
+        "0": "3",
+        "1": "Q2(Jul-Sep)",
+        "2": "51042261365",
+        "3": null,
+        "4": "Quant MF(166)",
+        "5": null,
+        "6": "First",
+        "7": "3,000",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      },
+      {
+        "0": "4",
+        "1": "Q1(Apr-Jun)",
+        "2": "51042261365",
+        "3": null,
+        "4": "Quant MF(166)",
+        "5": null,
+        "6": "First",
+        "7": "3,000",
+        "8": "0",
+        "9": null,
+        "10": "Active"
+      }
+    ]
+  ]
+}
