@@ -554,7 +554,7 @@
     </div>
 
     <script>
-        let isNewChat = true;
+        let isNewChat = 1;
         let selectedFile = null;
 
         // Screen switching
@@ -619,15 +619,20 @@
             loading.style.display = 'block';
             
             try {
+                const formData2 = new FormData();
+                formData2.append('user_query', message);
+                formData2.append('is_new_chat', isNewChat);
+                // formData2.append('image','')
                 const response = await fetch('http://127.0.0.1:3500/get_details', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        user_query: message,
-                        is_new_chat: isNewChat
-                    })
+                    // headers: {
+                    //     'Content-Type': 'application/json',
+                    // },
+                    // body: JSON.stringify({
+                    //     user_query: message,
+                    //     is_new_chat: isNewChat
+                    // })
+                    body:formData2
                 });
                 
                 const data = await response.json();
@@ -638,7 +643,7 @@
                 addMessage(res || "I understand. Please provide more details about your income sources.");
                 
                 // After first message, it's no longer a new chat
-                isNewChat = false;
+                isNewChat = 0;
                 
             } catch (error) {
                 console.error('Error:', error);
