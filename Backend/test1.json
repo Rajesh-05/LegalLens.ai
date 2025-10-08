@@ -1,0 +1,131 @@
+{
+    "ITR": {
+        "ITR1": {
+            "ITR1_IncomeDeductions": {
+                "AnnualValue": 0,
+                "DeductUndChapVIA": {
+                    "AnyOthSec80CCH": 0,
+                    "Section80C": 0,
+                    "Section80CCC": 0,
+                    "Section80CCD1B": 0,
+                    "Section80CCDEmployeeOrSE": 0,
+                    "Section80CCDEmployer": 0,
+                    "Section80D": 0,
+                    "Section80DD": 0,
+                    "Section80DDB": 0,
+                    "Section80E": 0,
+                    "Section80EE": 0,
+                    "Section80EEA": 0,
+                    "Section80EEB": 0,
+                    "Section80G": 0,
+                    "Section80GG": 0,
+                    "Section80GGA": 0,
+                    "Section80GGC": 0,
+                    "Section80TTA": 0,
+                    "Section80TTB": 0,
+                    "Section80U": 0,
+                    "TotalChapVIADeductions": 0
+                },
+                "DeductionUs16": 0,
+                "GrossSalary": 0,
+                "GrossTotIncome": 0,
+                "GrossTotIncomeIncLTCG112A": 0,
+                "IncomeFromSal": 0,
+                "IncomeNotified89A": 0,
+                "IncomeOthSrc": 1045,
+                "NetSalary": 0,
+                "OthersInc": {
+                    "OthersIncDtlsOthSrc": [
+                        {
+                            "OthSrcNatureDesc": "DIV",
+                            "OthSrcOthAmount": 32
+                        },
+                        {
+                            "OthSrcNatureDesc": "SAV",
+                            "OthSrcOthAmount": 1013
+                        }
+                    ]
+                },
+                "StandardDeduction": 0,
+                "TotalIncome": 0,
+                "TotalIncomeOfHP": 0,
+                "UsrDeductUndChapVIA": {
+                    "AnyOthSec80CCH": 0,
+                    "Section80C": 0,
+                    "Section80CCC": 0,
+                    "Section80CCD1B": 0,
+                    "Section80CCDEmployeeOrSE": 0,
+                    "Section80CCDEmployer": 0,
+                    "Section80D": 0,
+                    "Section80DD": 0,
+                    "Section80DDB": 0,
+                    "Section80E": 0,
+                    "Section80EE": 0,
+                    "Section80G": 0,
+                    "Section80GG": 0,
+                    "Section80GGA": 0,
+                    "Section80GGC": 0,
+                    "Section80TTA": 0,
+                    "Section80TTB": 0,
+                    "Section80U": 0,
+                    "TotalChapVIADeductions": 0
+                }
+            },
+            "TDSonOthThanSals": {
+                "TDSonOthThanSal": [
+                    {
+                        "AmtForTaxDeduct": 32,
+                        "ClaimOutOfTotTDSOnAmtPaid": 0,
+                        "DeductedYr": "2024",
+                        "EmployerOrDeductorOrCollectDetl": {
+                            "EmployerOrDeductorOrCollecterName": "MOIL LIMITED",
+                            "TAN": "NGPM00667C"
+                        },
+                        "TDSSection": "194",
+                        "TotTDSOnAmtPaid": 0
+                    }
+                ],
+                "TotalTDSonOthThanSals": 0
+            },
+            "PersonalInfo": {
+                "AssesseeName": {
+                    "FirstName": "RAJESH",
+                    "SurNameOrOrgName": "DHANDAPANI"
+                },
+                "PAN": "IUEPD7861L",
+                "DOB": "2005-06-01",
+                "AadhaarCardNo": "924322669786",
+                "Address": {
+                    "CountryCodeMobile": 91,
+                    "MobileNo": 7812026222,
+                    "EmailAddress": "rajeshd1243@gmail.com",
+                    "ResidenceNo": "38/47 B ",
+                    "ResidenceName": "Karikalan Street",
+                    "RoadOrStreet": "Aturbazaar S.O",
+                    "LocalityOrArea": "Attur",
+                    "CityOrTownOrDistrict": "SALEM",
+                    "StateCode": "29",
+                    "CountryCode": "91",
+                    "PinCode": 636102
+                },
+                "EmployerCategory": "OTH"
+            },
+            "Verification": {
+                "Declaration": {
+                    "AssesseeVerName": "RAJESH DHANDAPANI",
+                    "FatherName": "DHANDAPANI",
+                    "AssesseeVerPAN": "IUEPD7861L"
+                },
+                "Capacity": "S",
+                "Place": "Banglore"
+            },
+            "Form_ITR1": {
+                "FormName": "ITR-1",
+                "Description": "For Indls having Income from Salary, Pension, family pension and Interest",
+                "AssessmentYear": "2025",
+                "SchemaVer": "Ver1.0",
+                "FormVer": "Ver1.0"
+            }
+        }
+    }
+}

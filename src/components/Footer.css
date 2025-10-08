@@ -1,0 +1,270 @@
+.footer {
+  background-color: #030303;
+  color: #F1EFEC;
+  padding: 4rem 0 2rem;
+  width: 100%;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #F1EFEC;
+  margin-bottom: 1rem;
+}
+
+.footer-brand p {
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+  max-width: 280px;
+  color: #F1EFEC;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #123458;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.social-link:hover {
+  background-color: #D4C9BE;
+  transform: translateY(-2px);
+}
+
+.footer-section h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #F1EFEC;
+  margin-bottom: 1.5rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-section a {
+  color: #F1EFEC;
+  text-decoration: none;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.footer-section a:hover {
+  opacity: 1;
+  color: #D4C9BE;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.contact-icon {
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+}
+
+.contact-item strong {
+  display: block;
+  color: #F1EFEC;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+}
+
+.contact-item p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #F1EFEC;
+}
+
+.footer-bottom {
+  border-top: 1px solid #123458;
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-legal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.legal-links {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legal-links a {
+  color: #F1EFEC;
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.legal-links a:hover {
+  opacity: 1;
+}
+
+.certifications {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cert-badge {
+  background-color: #123458;
+  color: #F1EFEC;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.footer-copyright {
+  text-align: right;
+}
+
+.footer-copyright p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  color: #F1EFEC;
+}
+
+.footer-tagline {
+  margin-top: 0.5rem !important;
+  font-size: 0.85rem !important;
+  color: #D4C9BE !important;
+  opacity: 1 !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .footer-brand {
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 3rem 0 1.5rem;
+  }
+  
+  .footer-container {
+    padding: 0 1rem;
+  }
+  
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .footer-copyright {
+    text-align: left;
+  }
+  
+  .legal-links {
+    gap: 1rem;
+  }
+  
+  .certifications {
+    gap: 0.5rem;
+  }
+  
+  .cert-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-details {
+    gap: 1rem;
+  }
+  
+  .contact-item {
+    gap: 0.75rem;
+  }
+  
+  .legal-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .certifications {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .social-links {
+    justify-content: flex-start;
+  }
+}
