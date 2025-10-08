@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import MarkdownText from '../components/MarkdownText';
 
 const Chat = () => {
   const { user } = useAuth();
@@ -201,7 +202,7 @@ const Chat = () => {
                       }} 
                     />
                   )}
-                  <div>{message.text}</div>
+                  <MarkdownText>{message.text}</MarkdownText>
                 </div>
               </div>
             ))}
