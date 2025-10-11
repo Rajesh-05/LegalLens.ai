@@ -1,0 +1,246 @@
+{
+    "Refund": {
+        "type": "object",
+        "description": "Refund details",
+        "additionalProperties": false,
+        "properties": {
+            "BankAccountDtls": {
+                "type": "object",
+                "description": "Bank details",
+                "additionalProperties": false,
+                "properties": {
+                    "AddtnlBankDetails": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "IFSCCode": {
+                                    "pattern": "[A-Z]{4}[0][A-Z0-9]{6}",
+                                    "allOf": [
+                                        {
+                                            "type": "string",
+                                            "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                                        }
+                                    ]
+                                },
+                                "BankName": {
+                                    "maxLength": 125,
+                                    "minLength": 1,
+                                    "allOf": [
+                                        {
+                                            "type": "string",
+                                            "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                                        }
+                                    ]
+                                },
+                                "BankAccountNo": {
+                                    "maxLength": 20,
+                                    "minLength": 1,
+                                    "pattern": "[a-zA-Z0-9]([/-]?(((\\d*[1-9]\\d*)*[a-zA-Z/-])|(\\d*[1-9]\\d*[a-zA-Z]*))+)*[0-9]*",
+                                    "allOf": [
+                                        {
+                                            "pattern": ".*[1-9].*",
+                                            "allOf": [
+                                                {
+                                                    "type": "string",
+                                                    "pattern": ".*[0-9]"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "AccountType": {
+                                    "type": "string",
+                                    "description": "SB: Savings Account, CA: Current Account,CC: Cash Credit Account, OD: Over draft account, NRO: Non Resident Account, OTH: Other",
+                                    "enum": [
+                                        "SB",
+                                        "CA",
+                                        "CC",
+                                        "OD",
+                                        "NRO",
+                                        "OTH"
+                                    ]
+                                },
+                                "UseForRefund": {
+                                    "enum": [
+                                        "true",
+                                        "false"
+                                    ],
+                                    "allOf": [
+                                        {
+                                            "type": "string",
+                                            "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                                        }
+                                    ],
+                                    "default": "false"
+                                }
+                            },
+                            "required": [
+                                "IFSCCode",
+                                "BankName",
+                                "BankAccountNo",
+                                "AccountType",
+                                "UseForRefund"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "BankAccountDtls"
+        ]
+    },
+
+
+
+            "FilingStatus": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ReturnFileSec": {
+                  "type": "integer",
+                  "description": "11 : 139(1)-On or before due date, 12 : 139(4)-After due date, 13 : 142(1), 14 : 148,  16 : 153C, 17 : 139(5)-Revised , 18 : 139(9), 20 : 119(2)(b)-After condonation of delay",
+                  "enum": [
+                    11,
+                    12,
+                    13,
+                    14,
+                    16,
+                    17,
+                    18,
+                    20
+                  ],
+                  "maximum": 20,
+                  "minimum": 11,
+                  "exclusiveMinimum": false,
+                  "default": 11
+                },
+                "OptOutNewTaxRegime": {
+                  "pattern": "Y|N",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "SeventhProvisio139": {
+                  "pattern": "Y|N",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "IncrExpAggAmt2LkTrvFrgnCntryFlg": {
+                  "pattern": "Y|N",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "AmtSeventhProvisio139ii": {
+                  "type": "integer",
+                  "maximum": 99999999999999,
+                  "minimum": 200000,
+                  "exclusiveMinimum": false
+                },
+                "IncrExpAggAmt1LkElctrctyPrYrFlg": {
+                  "pattern": "Y|N",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "AmtSeventhProvisio139iii": {
+                  "type": "integer",
+                  "maximum": 99999999999999,
+                  "minimum": 100000,
+                  "exclusiveMinimum": false
+                },
+                "clauseiv7provisio139i": {
+                  "pattern": "Y|N",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "clauseiv7provisio139iDtls": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "clauseiv7provisio139iNature": {
+                        "type": "string",
+                        "description": "1 - the aggregate of tax deducted at source and tax collected at source during the previous year, in the case of the person, is twenty-five thousand rupees or more(fifty thousand for resident senior citizen); 2 - the deposit in one or more savings bank account of the person, in aggregate, is fifty lakh rupees or more, in the previous year",
+                        "enum": [
+                          "1",
+                          "2"
+                        ]
+                      },
+                      "clauseiv7provisio139iAmount": {
+                        "type": "integer",
+                        "maximum": 99999999999999,
+                        "minimum": 0,
+                        "exclusiveMinimum": false
+                      }
+                    },
+                    "required": [
+                      "clauseiv7provisio139iNature",
+                      "clauseiv7provisio139iAmount"
+                    ]
+                  }
+                },
+                "ReceiptNo": {
+                  "type": "string",
+                  "description": "Enter the Acknowledgement number of the original return.",
+                  "pattern": "[0-9]{15}"
+                },
+                "NoticeNo": {
+                  "maxLength": 100,
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                },
+                "OrigRetFiledDate": {
+                  "type": "string",
+                  "description": "Enter Date of filing of Original return in YYYY-MM-DD format",
+                  "pattern": "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))"
+                },
+                "NoticeDateUnderSec": {
+                  "type": "string",
+                  "description": "Enter Date of Notice or Order in YYYY-MM-DD format",
+                  "pattern": "([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))"
+                },
+                "ItrFilingDueDate": {
+                  "maxLength": 10,
+                  "minLength": 9,
+                  "pattern": "2025-07-31",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "|(\\s*([\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"][\\s\\w\\d_=!@#$%\\^*\\(\\){}\\[\\]\\|\\\\:;',\\.\\?/~`\\-\\+<>&\"]*)\\s*)"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "ReturnFileSec",
+                "OptOutNewTaxRegime",
+                "ItrFilingDueDate"
+              ]
+            }}

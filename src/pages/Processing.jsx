@@ -1,6 +1,5 @@
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const Processing = () => {
   const { user } = useAuth();
@@ -41,7 +40,6 @@ const Processing = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

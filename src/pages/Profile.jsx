@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const Profile = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [currentStep, setCurrentStep] = useState(1); // Step 1: Personal Info, Step 2: Refund Details
+  
+  // Personal Information State
+  const [personalInfo, setPersonalInfo] = useState({
     AssesseeName: {
       FirstName: '',
       MiddleName: '',
@@ -22,7 +24,7 @@ const Profile = () => {
       LocalityOrArea: '',
       CityOrTownOrDistrict: '',
       StateCode: '',
-      CountryCode: '91', // Default to India
+      CountryCode: '91',
       PinCode: '',
       ZipCode: '',
       Phone: {
@@ -37,10 +39,35 @@ const Profile = () => {
       EmailAddressSec: ''
     },
     DOB: '',
-    Status: 'I', // Default to Individual
+    Status: 'I',
     AadhaarCardNo: ''
   });
+
+  // Refund Information State
+  const [refundInfo, setRefundInfo] = useState({
+    BankAccountDtls: {
+      AddtnlBankDetails: [
+        {
+          IFSCCode: '',
+          BankName: '',
+          BankAccountNo: '',
+          AccountType: 'SB',
+          UseForRefund: 'true'
+        }
+      ]
+    }
+  });
+
   const [errors, setErrors] = useState({});
+
+  const accountTypeOptions = [
+    { value: 'SB', label: 'Savings Account' },
+    { value: 'CA', label: 'Current Account' },
+    { value: 'CC', label: 'Cash Credit Account' },
+    { value: 'OD', label: 'Over Draft Account' },
+    { value: 'NRO', label: 'Non Resident Account' },
+    { value: 'OTH', label: 'Other' }
+  ];
 
   const stateOptions = [
     { value: '01', label: 'Andaman and Nicobar islands' },
@@ -83,28 +110,19 @@ const Profile = () => {
     { value: '99', label: 'Foreign' }
   ];
 
-  const statusOptions = [
-    { value: 'I', label: 'Individual' },
-    { value: 'H', label: 'HUF (Hindu Undivided Family)' }
-  ];
-
+  // Validation functions
   const validatePAN = (pan) => {
     const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
     return panPattern.test(pan);
   };
 
-  const validateAadhaar = (aadhaar) => {
-    const aadhaarPattern = /^[0-9]{12}$/;
-    return aadhaarPattern.test(aadhaar);
-  };
-
   const validateEmail = (email) => {
-    const emailPattern = /^([\\.a-zA-Z0-9_\\-])+@([a-zA-Z0-9_\\-])+(([a-zA-Z0-9_\\-])*\\.([a-zA-Z0-9_\\-])+)+$/;
+    const emailPattern = /^[\w\-.]+@[\w\-]+\.[\w\-.]+$/;
     return emailPattern.test(email);
   };
 
   const validateMobile = (mobile) => {
-    const mobilePattern = /^[1-9]{1}[0-9]{9}$/;
+    const mobilePattern = /^[1-9][0-9]{9}$/;
     return mobilePattern.test(mobile);
   };
 
@@ -113,15 +131,14 @@ const Profile = () => {
     return pinPattern.test(pinCode);
   };
 
-  const handleInputChange = (e) => {
+  // Input change handlers
+  const handlePersonalInfoChange = (e) => {
     const { name, value } = e.target;
     
-    // Handle nested object updates
     if (name.includes('.')) {
       const [parent, child, grandchild] = name.split('.');
       if (grandchild) {
-        // Three levels deep (e.g., Address.Phone.STDcode)
-        setFormData(prev => ({
+        setPersonalInfo(prev => ({
           ...prev,
           [parent]: {
             ...prev[parent],
@@ -132,8 +149,7 @@ const Profile = () => {
           }
         }));
       } else {
-        // Two levels deep (e.g., AssesseeName.FirstName)
-        setFormData(prev => ({
+        setPersonalInfo(prev => ({
           ...prev,
           [parent]: {
             ...prev[parent],
@@ -142,98 +158,118 @@ const Profile = () => {
         }));
       }
     } else {
-      // Single level (e.g., PAN)
-      setFormData(prev => ({
+      setPersonalInfo(prev => ({
         ...prev,
         [name]: value
       }));
     }
 
-    // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
-  const validateForm = () => {
+  const handleRefundInfoChange = (e, index = 0) => {
+    const { name, value } = e.target;
+    
+    setRefundInfo(prev => ({
+      ...prev,
+      BankAccountDtls: {
+        ...prev.BankAccountDtls,
+        AddtnlBankDetails: prev.BankAccountDtls.AddtnlBankDetails.map((bank, i) => 
+          i === index ? { ...bank, [name]: value } : bank
+        )
+      }
+    }));
+
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  // Validation functions
+  const validatePersonalInfo = () => {
     const newErrors = {};
 
-    // Validate AssesseeName
-    if (!formData.AssesseeName.SurNameOrOrgName.trim()) {
-      newErrors['AssesseeName.SurNameOrOrgName'] = 'Surname/Organization Name is required';
+    if (!personalInfo.AssesseeName.SurNameOrOrgName.trim()) {
+      newErrors['AssesseeName.SurNameOrOrgName'] = 'Surname/Organization name is required';
     }
-
-    // Validate PAN
-    if (!formData.PAN.trim()) {
+    if (!personalInfo.PAN.trim()) {
       newErrors.PAN = 'PAN is required';
-    } else if (!validatePAN(formData.PAN)) {
-      newErrors.PAN = 'Invalid PAN format. Use format: ABCDE1234F';
+    } else if (!validatePAN(personalInfo.PAN)) {
+      newErrors.PAN = 'Invalid PAN format (e.g., ABCDE1234F)';
     }
-
-    // Validate Address fields
-    if (!formData.Address.ResidenceNo.trim()) {
-      newErrors['Address.ResidenceNo'] = 'Residence Number is required';
+    if (!personalInfo.Address.ResidenceNo.trim()) {
+      newErrors['Address.ResidenceNo'] = 'Residence number is required';
     }
-    if (!formData.Address.LocalityOrArea.trim()) {
+    if (!personalInfo.Address.LocalityOrArea.trim()) {
       newErrors['Address.LocalityOrArea'] = 'Locality/Area is required';
     }
-    if (!formData.Address.CityOrTownOrDistrict.trim()) {
+    if (!personalInfo.Address.CityOrTownOrDistrict.trim()) {
       newErrors['Address.CityOrTownOrDistrict'] = 'City/Town/District is required';
     }
-    if (!formData.Address.StateCode) {
+    if (!personalInfo.Address.StateCode) {
       newErrors['Address.StateCode'] = 'State is required';
     }
-    if (!formData.Address.CountryCode) {
-      newErrors['Address.CountryCode'] = 'Country is required';
+    if (!personalInfo.Address.CountryCode) {
+      newErrors['Address.CountryCode'] = 'Country code is required';
     }
-    if (!formData.Address.PinCode.trim()) {
-      newErrors['Address.PinCode'] = 'Pin Code is required';
-    } else if (!validatePinCode(formData.Address.PinCode)) {
-      newErrors['Address.PinCode'] = 'Invalid Pin Code format';
+    if (!personalInfo.Address.MobileNo.toString().trim()) {
+      newErrors['Address.MobileNo'] = 'Mobile number is required';
+    } else if (!validateMobile(personalInfo.Address.MobileNo.toString())) {
+      newErrors['Address.MobileNo'] = 'Invalid mobile number';
     }
-
-    // Validate Mobile
-    if (!formData.Address.MobileNo.toString().trim()) {
-      newErrors['Address.MobileNo'] = 'Mobile Number is required';
-    } else if (!validateMobile(formData.Address.MobileNo.toString())) {
-      newErrors['Address.MobileNo'] = 'Invalid Mobile Number format';
+    if (!personalInfo.Address.EmailAddress.trim()) {
+      newErrors['Address.EmailAddress'] = 'Email address is required';
+    } else if (!validateEmail(personalInfo.Address.EmailAddress)) {
+      newErrors['Address.EmailAddress'] = 'Invalid email format';
     }
-
-    // Validate Email
-    if (!formData.Address.EmailAddress.trim()) {
-      newErrors['Address.EmailAddress'] = 'Email Address is required';
-    } else if (!validateEmail(formData.Address.EmailAddress)) {
-      newErrors['Address.EmailAddress'] = 'Invalid Email format';
-    }
-
-    // Validate DOB
-    if (!formData.DOB) {
-      newErrors.DOB = 'Date of Birth is required';
-    }
-
-    // Validate Status
-    if (!formData.Status) {
-      newErrors.Status = 'Status is required';
-    }
-
-    // Validate Aadhaar
-    if (!formData.AadhaarCardNo.trim()) {
-      newErrors.AadhaarCardNo = 'Aadhaar Card Number is required';
-    } else if (!validateAadhaar(formData.AadhaarCardNo)) {
-      newErrors.AadhaarCardNo = 'Invalid Aadhaar format. Must be 12 digits';
+    if (!personalInfo.DOB) {
+      newErrors.DOB = 'Date of birth is required';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const validateRefundInfo = () => {
+    const newErrors = {};
+    const bank = refundInfo.BankAccountDtls.AddtnlBankDetails[0];
+
+    if (!bank.IFSCCode.trim()) {
+      newErrors.IFSCCode = 'IFSC code is required';
+    } else if (!/^[A-Z]{4}[0][A-Z0-9]{6}$/.test(bank.IFSCCode)) {
+      newErrors.IFSCCode = 'Invalid IFSC code format';
+    }
+    if (!bank.BankName.trim()) {
+      newErrors.BankName = 'Bank name is required';
+    }
+    if (!bank.BankAccountNo.trim()) {
+      newErrors.BankAccountNo = 'Bank account number is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Step navigation handlers
+  const handleContinueToRefund = (e) => {
+    e.preventDefault();
+    if (validatePersonalInfo()) {
+      setCurrentStep(2);
+      setErrors({}); // Clear any previous errors
+    }
+  };
+
+  const handleBackToPersonal = () => {
+    setCurrentStep(1);
+    setErrors({}); // Clear any previous errors
+  };
+
+  const handleFinalSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validateRefundInfo()) {
       return;
     }
 
@@ -247,14 +283,14 @@ const Profile = () => {
         },
         body: JSON.stringify({
           user_id: user.user_id,
-          ...formData
+          PersonalInfo: personalInfo,
+          Refund: refundInfo
         }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        // Profile updated successfully
         alert('Profile updated successfully!');
         navigate('/dashboard');
       } else {
@@ -265,6 +301,467 @@ const Profile = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '0.75rem',
+    border: '2px solid #D4C9BE',
+    borderRadius: '8px',
+    fontSize: '1rem',
+    backgroundColor: '#F1EFEC',
+    color: '#030303',
+    outline: 'none',
+    transition: 'border-color 0.3s'
+  };
+
+  const errorStyle = {
+    color: '#e74c3c',
+    fontSize: '0.875rem',
+    marginTop: '0.25rem'
+  };
+
+  const buttonStyle = {
+    padding: '12px 30px',
+    borderRadius: '25px',
+    border: 'none',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    transition: 'all 0.3s'
+  };
+
+  const primaryButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#123458',
+    color: 'white'
+  };
+
+  const secondaryButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#D4C9BE',
+    color: '#030303'
+  };
+
+  // Render Personal Information Form
+  const renderPersonalInfoForm = () => (
+    <form onSubmit={handleContinueToRefund} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Step Indicator */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '2rem',
+        padding: '1rem',
+        backgroundColor: '#F1EFEC',
+        borderRadius: '10px'
+      }}>
+      </div>
+
+      {/* Assessee Name */}
+      <div>
+        <h3 style={{ color: '#123458', marginBottom: '1rem' }}>Assessee Name</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              First Name
+            </label>
+            <input
+              type="text"
+              name="AssesseeName.FirstName"
+              value={personalInfo.AssesseeName.FirstName}
+              onChange={handlePersonalInfoChange}
+              style={inputStyle}
+              maxLength={25}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Middle Name
+            </label>
+            <input
+              type="text"
+              name="AssesseeName.MiddleName"
+              value={personalInfo.AssesseeName.MiddleName}
+              onChange={handlePersonalInfoChange}
+              style={inputStyle}
+              maxLength={25}
+            />
+          </div>
+        </div>
+        <div style={{ marginTop: '1rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+            Surname/Organization Name *
+          </label>
+          <input
+            type="text"
+            name="AssesseeName.SurNameOrOrgName"
+            value={personalInfo.AssesseeName.SurNameOrOrgName}
+            onChange={handlePersonalInfoChange}
+            style={{...inputStyle, borderColor: errors['AssesseeName.SurNameOrOrgName'] ? '#e74c3c' : '#D4C9BE'}}
+            maxLength={75}
+            required
+          />
+          {errors['AssesseeName.SurNameOrOrgName'] && <div style={errorStyle}>{errors['AssesseeName.SurNameOrOrgName']}</div>}
+        </div>
+      </div>
+
+      {/* PAN */}
+      <div>
+        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+          PAN *
+        </label>
+        <input
+          type="text"
+          name="PAN"
+          value={personalInfo.PAN}
+          onChange={handlePersonalInfoChange}
+          style={{...inputStyle, borderColor: errors.PAN ? '#e74c3c' : '#D4C9BE'}}
+          placeholder="ABCDE1234F"
+          maxLength={10}
+          required
+        />
+        {errors.PAN && <div style={errorStyle}>{errors.PAN}</div>}
+      </div>
+
+      {/* Address */}
+      <div>
+        <h3 style={{ color: '#123458', marginBottom: '1rem' }}>Address Details</h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Residence No *
+            </label>
+            <input
+              type="text"
+              name="Address.ResidenceNo"
+              value={personalInfo.Address.ResidenceNo}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.ResidenceNo'] ? '#e74c3c' : '#D4C9BE'}}
+              maxLength={50}
+              required
+            />
+            {errors['Address.ResidenceNo'] && <div style={errorStyle}>{errors['Address.ResidenceNo']}</div>}
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Residence Name
+            </label>
+            <input
+              type="text"
+              name="Address.ResidenceName"
+              value={personalInfo.Address.ResidenceName}
+              onChange={handlePersonalInfoChange}
+              style={inputStyle}
+              maxLength={50}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+            Road/Street
+          </label>
+          <input
+            type="text"
+            name="Address.RoadOrStreet"
+            value={personalInfo.Address.RoadOrStreet}
+            onChange={handlePersonalInfoChange}
+            style={inputStyle}
+            maxLength={50}
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Locality/Area *
+            </label>
+            <input
+              type="text"
+              name="Address.LocalityOrArea"
+              value={personalInfo.Address.LocalityOrArea}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.LocalityOrArea'] ? '#e74c3c' : '#D4C9BE'}}
+              maxLength={50}
+              required
+            />
+            {errors['Address.LocalityOrArea'] && <div style={errorStyle}>{errors['Address.LocalityOrArea']}</div>}
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              City/Town/District *
+            </label>
+            <input
+              type="text"
+              name="Address.CityOrTownOrDistrict"
+              value={personalInfo.Address.CityOrTownOrDistrict}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.CityOrTownOrDistrict'] ? '#e74c3c' : '#D4C9BE'}}
+              maxLength={50}
+              required
+            />
+            {errors['Address.CityOrTownOrDistrict'] && <div style={errorStyle}>{errors['Address.CityOrTownOrDistrict']}</div>}
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              State *
+            </label>
+            <select
+              name="Address.StateCode"
+              value={personalInfo.Address.StateCode}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.StateCode'] ? '#e74c3c' : '#D4C9BE'}}
+              required
+            >
+              <option value="">Select State</option>
+              {stateOptions.map(state => (
+                <option key={state.value} value={state.value}>
+                  {state.label}
+                </option>
+              ))}
+            </select>
+            {errors['Address.StateCode'] && <div style={errorStyle}>{errors['Address.StateCode']}</div>}
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Pin Code
+            </label>
+            <input
+              type="text"
+              name="Address.PinCode"
+              value={personalInfo.Address.PinCode}
+              onChange={handlePersonalInfoChange}
+              style={inputStyle}
+              maxLength={6}
+              placeholder="110001"
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Country Code *
+            </label>
+            <input
+              type="number"
+              name="Address.CountryCodeMobile"
+              value={personalInfo.Address.CountryCodeMobile}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.CountryCode'] ? '#e74c3c' : '#D4C9BE'}}
+              required
+            />
+            {errors['Address.CountryCode'] && <div style={errorStyle}>{errors['Address.CountryCode']}</div>}
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Mobile Number *
+            </label>
+            <input
+              type="tel"
+              name="Address.MobileNo"
+              value={personalInfo.Address.MobileNo}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors['Address.MobileNo'] ? '#e74c3c' : '#D4C9BE'}}
+              placeholder="9876543210"
+              required
+            />
+            {errors['Address.MobileNo'] && <div style={errorStyle}>{errors['Address.MobileNo']}</div>}
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+            Email Address *
+          </label>
+          <input
+            type="email"
+            name="Address.EmailAddress"
+            value={personalInfo.Address.EmailAddress}
+            onChange={handlePersonalInfoChange}
+            style={{...inputStyle, borderColor: errors['Address.EmailAddress'] ? '#e74c3c' : '#D4C9BE'}}
+            maxLength={125}
+            required
+          />
+          {errors['Address.EmailAddress'] && <div style={errorStyle}>{errors['Address.EmailAddress']}</div>}
+        </div>
+      </div>
+
+      {/* Other Details */}
+      <div>
+        <h3 style={{ color: '#123458', marginBottom: '1rem' }}>Other Details</h3>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Date of Birth *
+            </label>
+            <input
+              type="date"
+              name="DOB"
+              value={personalInfo.DOB}
+              onChange={handlePersonalInfoChange}
+              style={{...inputStyle, borderColor: errors.DOB ? '#e74c3c' : '#D4C9BE'}}
+              max="2025-03-31"
+              required
+            />
+            {errors.DOB && <div style={errorStyle}>{errors.DOB}</div>}
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Status *
+            </label>
+            <select
+              name="Status"
+              value={personalInfo.Status}
+              onChange={handlePersonalInfoChange}
+              style={inputStyle}
+              required
+            >
+              <option value="I">Individual</option>
+              <option value="H">HUF</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+            Aadhaar Card Number
+          </label>
+          <input
+            type="text"
+            name="AadhaarCardNo"
+            value={personalInfo.AadhaarCardNo}
+            onChange={handlePersonalInfoChange}
+            style={inputStyle}
+            maxLength={12}
+            placeholder="123456789012"
+          />
+        </div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+        <button
+          type="submit"
+          style={primaryButtonStyle}
+          disabled={isLoading}
+        >
+          Continue to Bank Details
+        </button>
+      </div>
+    </form>
+  );
+
+  // Render Refund Information Form
+  const renderRefundInfoForm = () => {
+    const bank = refundInfo.BankAccountDtls.AddtnlBankDetails[0];
+    
+    return (
+      <form onSubmit={handleFinalSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {/* Step Indicator */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '2rem',
+          padding: '1rem',
+          backgroundColor: '#F1EFEC',
+          borderRadius: '10px'
+        }}>
+        </div>
+
+        {/* Bank Details */}
+        <div>
+          <h3 style={{ color: '#123458', marginBottom: '1rem' }}>Bank Account Information</h3>
+          
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              IFSC Code *
+            </label>
+            <input
+              type="text"
+              name="IFSCCode"
+              value={bank.IFSCCode}
+              onChange={(e) => handleRefundInfoChange(e, 0)}
+              style={{...inputStyle, borderColor: errors.IFSCCode ? '#e74c3c' : '#D4C9BE'}}
+              placeholder="SBIN0001234"
+              maxLength={11}
+              required
+            />
+            {errors.IFSCCode && <div style={errorStyle}>{errors.IFSCCode}</div>}
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Bank Name *
+            </label>
+            <input
+              type="text"
+              name="BankName"
+              value={bank.BankName}
+              onChange={(e) => handleRefundInfoChange(e, 0)}
+              style={{...inputStyle, borderColor: errors.BankName ? '#e74c3c' : '#D4C9BE'}}
+              maxLength={125}
+              required
+            />
+            {errors.BankName && <div style={errorStyle}>{errors.BankName}</div>}
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Bank Account Number *
+            </label>
+            <input
+              type="text"
+              name="BankAccountNo"
+              value={bank.BankAccountNo}
+              onChange={(e) => handleRefundInfoChange(e, 0)}
+              style={{...inputStyle, borderColor: errors.BankAccountNo ? '#e74c3c' : '#D4C9BE'}}
+              maxLength={20}
+              required
+            />
+            {errors.BankAccountNo && <div style={errorStyle}>{errors.BankAccountNo}</div>}
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', color: '#030303' }}>
+              Account Type *
+            </label>
+            <select
+              name="AccountType"
+              value={bank.AccountType}
+              onChange={(e) => handleRefundInfoChange(e, 0)}
+              style={inputStyle}
+              required
+            >
+              {accountTypeOptions.map(type => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
+          <button
+            type="button"
+            onClick={handleBackToPersonal}
+            style={secondaryButtonStyle}
+          >
+            Back to Personal Info
+          </button>
+          <button
+            type="submit"
+            style={primaryButtonStyle}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Completing Profile...' : 'Complete Profile'}
+          </button>
+        </div>
+      </form>
+    );
   };
 
   return (
@@ -278,576 +775,15 @@ const Profile = () => {
           <p style={{ 
             fontSize: '1.1rem', 
             color: '#030303', 
-            opacity: 0.8, 
-            textAlign: 'center',
-            marginBottom: '3rem' 
+            textAlign: 'center', 
+            marginBottom: '2rem' 
           }}>
-            Please provide the following details to complete your tax profile
+            Please provide your personal information and bank details for tax filing and refund processing.
           </p>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Assessee Name Section */}
-            <div style={{ background: '#F1EFEC', padding: '1.5rem', borderRadius: '8px' }}>
-              <h3 style={{ color: '#123458', marginBottom: '1rem', marginTop: 0 }}>Assessee Name</h3>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="AssesseeName.FirstName"
-                    value={formData.AssesseeName.FirstName}
-                    onChange={handleInputChange}
-                    maxLength="25"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Enter first name"
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Middle Name
-                  </label>
-                  <input
-                    type="text"
-                    name="AssesseeName.MiddleName"
-                    value={formData.AssesseeName.MiddleName}
-                    onChange={handleInputChange}
-                    maxLength="25"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Enter middle name"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                  Surname/Organization Name *
-                </label>
-                <input
-                  type="text"
-                  name="AssesseeName.SurNameOrOrgName"
-                  value={formData.AssesseeName.SurNameOrOrgName}
-                  onChange={handleInputChange}
-                  maxLength="75"
-                  style={{
-                    width: '100%', padding: '12px 16px',
-                    border: `2px solid ${errors['AssesseeName.SurNameOrOrgName'] ? '#FF4444' : '#D4C9BE'}`,
-                    borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                  }}
-                  placeholder="Enter surname or organization name"
-                />
-                {errors['AssesseeName.SurNameOrOrgName'] && (
-                  <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                    {errors['AssesseeName.SurNameOrOrgName']}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* PAN */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                PAN *
-              </label>
-              <input
-                type="text"
-                name="PAN"
-                value={formData.PAN}
-                onChange={handleInputChange}
-                maxLength="10"
-                style={{
-                  width: '100%', padding: '12px 16px',
-                  border: `2px solid ${errors.PAN ? '#FF4444' : '#D4C9BE'}`,
-                  borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none',
-                  textTransform: 'uppercase'
-                }}
-                placeholder="ABCDE1234F"
-              />
-              {errors.PAN && (
-                <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                  {errors.PAN}
-                </span>
-              )}
-            </div>
-
-            {/* Address Section */}
-            <div style={{ background: '#F1EFEC', padding: '1.5rem', borderRadius: '8px' }}>
-              <h3 style={{ color: '#123458', marginBottom: '1rem', marginTop: 0 }}>Address</h3>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Residence Number *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.ResidenceNo"
-                    value={formData.Address.ResidenceNo}
-                    onChange={handleInputChange}
-                    maxLength="50"
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.ResidenceNo'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="House/Flat number"
-                  />
-                  {errors['Address.ResidenceNo'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.ResidenceNo']}
-                    </span>
-                  )}
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Residence Name
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.ResidenceName"
-                    value={formData.Address.ResidenceName}
-                    onChange={handleInputChange}
-                    maxLength="50"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Building/Society name"
-                  />
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                  Road/Street
-                </label>
-                <input
-                  type="text"
-                  name="Address.RoadOrStreet"
-                  value={formData.Address.RoadOrStreet}
-                  onChange={handleInputChange}
-                  maxLength="50"
-                  style={{
-                    width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                    borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                  }}
-                  placeholder="Road or street name"
-                />
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Locality/Area *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.LocalityOrArea"
-                    value={formData.Address.LocalityOrArea}
-                    onChange={handleInputChange}
-                    maxLength="50"
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.LocalityOrArea'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Locality or area"
-                  />
-                  {errors['Address.LocalityOrArea'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.LocalityOrArea']}
-                    </span>
-                  )}
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    City/Town/District *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.CityOrTownOrDistrict"
-                    value={formData.Address.CityOrTownOrDistrict}
-                    onChange={handleInputChange}
-                    maxLength="50"
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.CityOrTownOrDistrict'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="City, town, or district"
-                  />
-                  {errors['Address.CityOrTownOrDistrict'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.CityOrTownOrDistrict']}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    State *
-                  </label>
-                  <select
-                    name="Address.StateCode"
-                    value={formData.Address.StateCode}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.StateCode'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                  >
-                    <option value="">Select State</option>
-                    {stateOptions.map(state => (
-                      <option key={state.value} value={state.value}>{state.label}</option>
-                    ))}
-                  </select>
-                  {errors['Address.StateCode'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.StateCode']}
-                    </span>
-                  )}
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Country Code *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.CountryCode"
-                    value={formData.Address.CountryCode}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.CountryCode'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="91 (India)"
-                  />
-                  {errors['Address.CountryCode'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.CountryCode']}
-                    </span>
-                  )}
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Pin Code *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.PinCode"
-                    value={formData.Address.PinCode}
-                    onChange={handleInputChange}
-                    maxLength="6"
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.PinCode'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="123456"
-                  />
-                  {errors['Address.PinCode'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.PinCode']}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                  Zip Code (For Foreign Address)
-                </label>
-                <input
-                  type="text"
-                  name="Address.ZipCode"
-                  value={formData.Address.ZipCode}
-                  onChange={handleInputChange}
-                  maxLength="8"
-                  style={{
-                    width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                    borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                  }}
-                  placeholder="Zip code for foreign addresses"
-                />
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div style={{ background: '#F1EFEC', padding: '1.5rem', borderRadius: '8px' }}>
-              <h3 style={{ color: '#123458', marginBottom: '1rem', marginTop: 0 }}>Contact Information</h3>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    STD Code
-                  </label>
-                  <input
-                    type="number"
-                    name="Address.Phone.STDcode"
-                    value={formData.Address.Phone.STDcode}
-                    onChange={handleInputChange}
-                    min="0"
-                    max="99999"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="STD Code"
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.Phone.PhoneNo"
-                    value={formData.Address.Phone.PhoneNo}
-                    onChange={handleInputChange}
-                    maxLength="10"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Phone number"
-                  />
-                </div>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Country Code *
-                  </label>
-                  <input
-                    type="number"
-                    name="Address.CountryCodeMobile"
-                    value={formData.Address.CountryCodeMobile}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="91"
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Mobile Number *
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.MobileNo"
-                    value={formData.Address.MobileNo}
-                    onChange={handleInputChange}
-                    maxLength="10"
-                    style={{
-                      width: '100%', padding: '12px 16px',
-                      border: `2px solid ${errors['Address.MobileNo'] ? '#FF4444' : '#D4C9BE'}`,
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Mobile number"
-                  />
-                  {errors['Address.MobileNo'] && (
-                    <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                      {errors['Address.MobileNo']}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Country Code (Secondary)
-                  </label>
-                  <input
-                    type="number"
-                    name="Address.CountryCodeMobileNoSec"
-                    value={formData.Address.CountryCodeMobileNoSec}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="91"
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                    Secondary Mobile Number
-                  </label>
-                  <input
-                    type="text"
-                    name="Address.MobileNoSec"
-                    value={formData.Address.MobileNoSec}
-                    onChange={handleInputChange}
-                    maxLength="10"
-                    style={{
-                      width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                      borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                    }}
-                    placeholder="Secondary mobile number"
-                  />
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  name="Address.EmailAddress"
-                  value={formData.Address.EmailAddress}
-                  onChange={handleInputChange}
-                  maxLength="125"
-                  style={{
-                    width: '100%', padding: '12px 16px',
-                    border: `2px solid ${errors['Address.EmailAddress'] ? '#FF4444' : '#D4C9BE'}`,
-                    borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                  }}
-                  placeholder="Primary email address"
-                />
-                {errors['Address.EmailAddress'] && (
-                  <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                    {errors['Address.EmailAddress']}
-                  </span>
-                )}
-              </div>
-              
-              <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                  Secondary Email Address
-                </label>
-                <input
-                  type="email"
-                  name="Address.EmailAddressSec"
-                  value={formData.Address.EmailAddressSec}
-                  onChange={handleInputChange}
-                  maxLength="125"
-                  style={{
-                    width: '100%', padding: '12px 16px', border: '2px solid #D4C9BE',
-                    borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                  }}
-                  placeholder="Secondary email address"
-                />
-              </div>
-            </div>
-
-            {/* Date of Birth */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                Date of Birth *
-              </label>
-              <input
-                type="date"
-                name="DOB"
-                value={formData.DOB}
-                onChange={handleInputChange}
-                max="2025-03-31"
-                style={{
-                  width: '100%', padding: '12px 16px',
-                  border: `2px solid ${errors.DOB ? '#FF4444' : '#D4C9BE'}`,
-                  borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                }}
-              />
-              {errors.DOB && (
-                <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                  {errors.DOB}
-                </span>
-              )}
-            </div>
-
-            {/* Status */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                Status *
-              </label>
-              <select
-                name="Status"
-                value={formData.Status}
-                onChange={handleInputChange}
-                style={{
-                  width: '100%', padding: '12px 16px',
-                  border: `2px solid ${errors.Status ? '#FF4444' : '#D4C9BE'}`,
-                  borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                }}
-              >
-                {statusOptions.map(status => (
-                  <option key={status.value} value={status.value}>{status.label}</option>
-                ))}
-              </select>
-              {errors.Status && (
-                <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                  {errors.Status}
-                </span>
-              )}
-            </div>
-
-            {/* Aadhaar Card Number */}
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', color: '#123458', fontWeight: '500' }}>
-                Aadhaar Card Number *
-              </label>
-              <input
-                type="text"
-                name="AadhaarCardNo"
-                value={formData.AadhaarCardNo}
-                onChange={handleInputChange}
-                maxLength="12"
-                style={{
-                  width: '100%', padding: '12px 16px',
-                  border: `2px solid ${errors.AadhaarCardNo ? '#FF4444' : '#D4C9BE'}`,
-                  borderRadius: '8px', fontSize: '1rem', background: '#FFFFFF', outline: 'none'
-                }}
-                placeholder="123456789012"
-              />
-              {errors.AadhaarCardNo && (
-                <span style={{ color: '#FF4444', fontSize: '0.875rem', marginTop: '0.25rem', display: 'block' }}>
-                  {errors.AadhaarCardNo}
-                </span>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              style={{
-                width: '100%', padding: '16px',
-                background: isLoading ? '#D4C9BE' : '#123458', color: '#FFFFFF',
-                border: 'none', borderRadius: '8px', fontSize: '1.1rem', fontWeight: '600',
-                cursor: isLoading ? 'not-allowed' : 'pointer', marginTop: '1rem',
-                opacity: isLoading ? 0.7 : 1
-              }}
-            >
-              {isLoading ? 'Updating Profile...' : 'Complete Profile'}
-            </button>
-          </form>
+          {currentStep === 1 ? renderPersonalInfoForm() : renderRefundInfoForm()}
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
