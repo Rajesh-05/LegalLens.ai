@@ -67,33 +67,27 @@ const Footer = () => {
             <h4>Contact Info</h4>
             <div className="contact-details">
               <div className="contact-item">
-                <span className="contact-icon">📍</span>
+                {/* <span className="contact-icon">📍</span> */}
                 <div>
                   <strong>Headquarters</strong>
                   <p>Bangalore, Karnataka, India</p>
                 </div>
               </div>
               <div className="contact-item">
-                <span className="contact-icon">📧</span>
+                {/* <span className="contact-icon">📧</span> */}
                 <div>
                   <strong>Email</strong>
                   <p>support@taxflow.ai</p>
                 </div>
               </div>
               <div className="contact-item">
-                <span className="contact-icon">📞</span>
+                {/* <span className="contact-icon">📞</span> */}
                 <div>
                   <strong>Phone</strong>
                   <p>+91 98765 43210</p>
                 </div>
               </div>
-              <div className="contact-item">
-                <span className="contact-icon">⏰</span>
-                <div>
-                  <strong>Support Hours</strong>
-                  <p>Mon-Sat: 9 AM - 8 PM IST</p>
-                </div>
-              </div>
+ 
             </div>
           </div>
         </div>

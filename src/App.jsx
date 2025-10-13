@@ -7,8 +7,10 @@ import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import Filing from './pages/Filing'
+import Form16Upload from './pages/Form16Upload'
 import Processing from './pages/Processing'
 import Chat from './pages/Chat'
+import GeneralChat from './pages/GeneralChat'
 import Summary from './pages/Summary'
 
 function App() {
@@ -22,8 +24,10 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/filing" element={<Filing />} />
+          <Route path="/form16-upload" element={<Form16Upload />} />
           <Route path="/processing" element={<Processing />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/general-chat" element={<GeneralChat />} />
           <Route path="/summary" element={<Summary />} />
         </Routes>
       </Router>

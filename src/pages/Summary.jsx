@@ -46,6 +46,40 @@ const Summary = () => {
     fetchSummary();
   }, [fetchSummary]); // Now properly depends on the memoized function
 
+  const handleDownloadJson = () => {
+    if (!summaryData) {
+      alert('No data available to download');
+      return;
+    }
+
+    try {
+      // Create JSON string with proper formatting
+      const jsonString = JSON.stringify(summaryData, null, 2);
+      
+      // Create blob
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Generate filename with current date
+      const currentDate = new Date().toISOString().split('T')[0];
+      link.download = `Filed_ITR_Summary_${currentDate}.json`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Error downloading file. Please try again.');
+    }
+  };
+
   const renderJsonValue = (value, key = '', level = 0) => {
     const indent = level * 20;
     
@@ -123,7 +157,7 @@ const Summary = () => {
       <main style={{ padding: '120px 2rem 80px', minHeight: '70vh' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h1 style={{ color: '#123458', marginBottom: '1rem', textAlign: 'center' }}>
-            Tax Filing Summary
+            Filing Your Tax ...
           </h1>
           <p style={{ 
             fontSize: '1.1rem', 
@@ -132,7 +166,8 @@ const Summary = () => {
             textAlign: 'center',
             marginBottom: '3rem' 
           }}>
-            Here's a summary of your tax filing information collected by Zen.
+            {/* Here's a summary of your tax filing information collected by Zen. */}
+            It may take a few moments to file your tax return. Please do not close or refresh this page.
           </p>
           
           {isLoading ? (
@@ -156,7 +191,7 @@ const Summary = () => {
                 marginBottom: '1.5rem'
               }}></div>
               <h3 style={{ color: '#123458', marginBottom: '0.5rem' }}>
-                Generating Summary...
+                Generating ...
               </h3>
               <p style={{ color: '#030303', opacity: 0.7, textAlign: 'center' }}>
                 Please wait while we compile your tax information
@@ -181,7 +216,7 @@ const Summary = () => {
               textAlign: 'center'
             }}>
               <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-              <h3 style={{ color: '#FF4444', marginBottom: '1rem' }}>Error Loading Summary</h3>
+              <h3 style={{ color: '#FF4444', marginBottom: '1rem' }}>Error Loading JSON</h3>
               <p style={{ color: '#030303', opacity: 0.8, marginBottom: '1.5rem' }}>
                 {error}
               </p>
@@ -218,22 +253,43 @@ const Summary = () => {
                 borderBottom: '2px solid #F1EFEC'
               }}>
                 <h3 style={{ color: '#123458', margin: 0 }}>
-                  📊 Summary Data
+                  Filed ITR 📃 
                 </h3>
-                <button
-                  onClick={fetchSummary}
-                  style={{
-                    padding: '8px 16px',
-                    background: '#F1EFEC',
-                    color: '#123458',
-                    border: '2px solid #D4C9BE',
-                    borderRadius: '6px',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  🔄 Refresh
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={handleDownloadJson}
+                    style={{
+                      padding: '8px 16px',
+                      background: '#123458',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                    title="Download Filed ITR as JSON"
+                  >
+                    Download Filed ITR
+                  </button>
+                  <button
+                    onClick={fetchSummary}
+                    style={{
+                      padding: '8px 16px',
+                      background: '#F1EFEC',
+                      color: '#123458',
+                      border: '2px solid #D4C9BE',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Refresh
+                  </button>
+                </div>
               </div>
               
               <div style={{

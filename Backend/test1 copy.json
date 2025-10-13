@@ -1,12 +1,6 @@
 {
     "ITR": {
         "ITR1": {
-            "FilingStatus": {
-                "ReturnFileSec": 12,
-                "ItrFilingDueDate": "2025-07-31",
-                "OptOutNewTaxRegime": "N",
-                "SeventhProvisio139": "N"
-            },
             "ITR1_IncomeDeductions": {
                 "AnnualValue": 0,
                 "DeductUndChapVIA": {

@@ -137,8 +137,8 @@ const Filing = () => {
       const result = await response.json();
       
       if (result.success) {
-        // Navigate to chat page on success
-        navigate('/chat');
+        // Navigate to Form-16 upload page on success
+        navigate('/form16-upload');
       } else {
         showErrorPopup(result.message || 'Failed to upload document. Please try again.');
       }

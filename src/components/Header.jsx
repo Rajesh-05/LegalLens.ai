@@ -62,32 +62,40 @@ const Header = () => {
             )}
           </div>
 
-          {isAuthenticated ? (
-            <div className="nav-item dropdown">
-              <button 
-                className="nav-link user-menu"
-                onClick={() => toggleDropdown('user')}
-              >
-                <div className="user-info">
-                  <div className="user-avatar">
-                    <span>👤</span>
+          {isAuthenticated ? (  
+            <>
+              <div className="nav-item">
+                <Link to="/general-chat" className="nav-link">
+                {/* <Link to="/general-chat" className="nav-link" style={{backgroundColor:"#D4C9BE",color:"#123458"}}> */}
+                  Chat
+                </Link>
+              </div>
+              <div className="nav-item dropdown">
+                <button 
+                  className="nav-link user-menu"
+                  onClick={() => toggleDropdown('user')}
+                >
+                  <div className="user-info">
+                    <div className="user-avatar">
+                      <span>👤</span>
+                    </div>
+                    <span className="user-name">{user.name || user.username}</span>
                   </div>
-                  <span className="user-name">{user.name || user.username}</span>
-                </div>
-                <span className="dropdown-arrow">▼</span>
-              </button>
-              {activeDropdown === 'user' && (
-                <div className="dropdown-menu">
-                  <a href="#profile" className="dropdown-item">Profile</a>
-                  <a href="#settings" className="dropdown-item">Settings</a>
-                  <a href="#billing" className="dropdown-item">Billing</a>
-                  <hr className="dropdown-divider" />
-                  <button onClick={handleLogout} className="dropdown-item logout-btn">
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+                  <span className="dropdown-arrow">▼</span>
+                </button>
+                {activeDropdown === 'user' && (
+                  <div className="dropdown-menu">
+                    <a href="#profile" className="dropdown-item">Profile</a>
+                    <a href="#settings" className="dropdown-item">Settings</a>
+                    <a href="#billing" className="dropdown-item">Billing</a>
+                    <hr className="dropdown-divider" />
+                    <button onClick={handleLogout} className="dropdown-item logout-btn">
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <Link to="/signin" className="nav-link login-btn">
               Login
