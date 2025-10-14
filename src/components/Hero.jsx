@@ -53,11 +53,11 @@ const Hero = () => {
             <p className="trust-text">Trusted by 10,000+ individuals and 500+ CAs</p>
             <div className="trust-stats">
               <div className="stat">
-                <span className="stat-number">99.9%</span>
+                <span className="stat-number">95.9%</span>
                 <span className="stat-label">Accuracy</span>
               </div>
               <div className="stat">
-                <span className="stat-number">5 Min</span>
+                <span className="stat-number">13 Min</span>
                 <span className="stat-label">Avg. Filing Time</span>
               </div>
               <div className="stat">

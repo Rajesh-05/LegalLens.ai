@@ -93,16 +93,16 @@ const FAQ = () => {
               </div>
               <div className="contact-info">
                 <div className="contact-item">
-                  <span className="contact-icon">📧</span>
+                  {/* <span className="contact-icon">📧</span> */}
                   <span>support@taxflow.ai</span>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">📞</span>
+                  {/* <span className="contact-icon">📞</span> */}
                   <span>+91 98765 43210</span>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">⏰</span>
-                  <span>Mon-Sat: 9 AM - 8 PM</span>
+                  {/* <span className="contact-icon">⏰</span> */}
+                  <span>Mon - Sat : 09:00 AM - 09:00 PM</span>
                 </div>
               </div>
             </div>

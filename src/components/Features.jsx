@@ -32,12 +32,12 @@ const Features = () => {
       description: 'Personalized recommendations for tax-saving investments, deductions, and financial planning strategies.',
       benefits: ['Personalized advice', 'Investment suggestions', 'Maximize deductions']
     },
-    {
-      icon: '📊',
-      title: 'Comprehensive Analytics',
-      description: 'Detailed insights into your tax patterns, savings opportunities, and year-over-year comparisons.',
-      benefits: ['Visual dashboards', 'Trend analysis', 'Performance tracking']
-    }
+    // {
+    //   icon: '📊',
+    //   title: 'Comprehensive Analytics',
+    //   description: 'Detailed insights into your tax patterns, savings opportunities, and year-over-year comparisons.',
+    //   benefits: ['Visual dashboards', 'Trend analysis', 'Performance tracking']
+    // }
   ];
 
   return (

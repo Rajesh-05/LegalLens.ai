@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import appIcon from '../assets/app_image.png';
 import './Auth.css';
 
 const SignIn = () => {
@@ -65,7 +66,8 @@ const SignIn = () => {
         login(data.user || { username: formData.username });
         navigate('/dashboard');
       } else {
-        setError(data.message || 'Invalid credentials. Try username: Rajesh-05, password: 123456');
+        // setError(data.message || 'Invalid credentials. Try username: Rajesh-05, password: 123456');
+        setError(data.message || 'Invalid credentials.');
       }
     } catch (err) {
       // If network error, still allow dummy login
@@ -80,7 +82,7 @@ const SignIn = () => {
         login(userData);
         navigate('/dashboard');
       } else {
-        setError('Network error. For testing, use username: Rajesh-05, password: 123456');
+        setError('Network error. Please try again later.');
       }
     } finally {
       setLoading(false);
@@ -91,9 +93,20 @@ const SignIn = () => {
     <div className="auth-container">
       <div className="auth-wrapper">
         <div className="auth-brand">
-          <Link to="/" className="brand-link">
-            <h2>TaxFlow.ai</h2>
-          </Link>
+          {/* <Link to="/" className="brand-link"> */}
+            <img 
+              src={appIcon} 
+              alt="TaxFlow.ai" 
+              style={{
+                width: '280px',
+                height: '280px',
+                marginLeft:'-10px',
+                marginBottom: '1rem',
+                borderRadius: '32px'
+              }}
+            />
+            {/* <h2>TaxFlow.ai</h2> */}
+          {/* </Link> */}
           <p>Welcome back! Sign in to your account</p>
         </div>
 

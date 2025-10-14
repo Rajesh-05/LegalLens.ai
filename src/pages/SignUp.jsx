@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import appIcon from '../assets/app_image.png';
 import './Auth.css';
 
 const SignUp = () => {
@@ -78,9 +79,20 @@ const SignUp = () => {
     <div className="auth-container">
       <div className="auth-wrapper">
         <div className="auth-brand">
-          <Link to="/" className="brand-link">
-            <h2>TaxFlow.ai</h2>
-          </Link>
+          {/* <Link to="/" className="brand-link"> */}
+            <img 
+              src={appIcon} 
+              alt="TaxFlow.ai" 
+              style={{
+                width: '280px',
+                height: '280px',
+                marginLeft:'-10px',
+                marginBottom: '1rem',
+                borderRadius: '32px'
+              }}
+            />
+            {/* <h2>TaxFlow.ai</h2> */}
+          {/* </Link> */}
           <p>Join thousands who've simplified their tax filing</p>
         </div>
 
