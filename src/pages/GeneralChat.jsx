@@ -124,18 +124,18 @@ const GeneralChat = () => {
     <div className="app">
       <Header />
       <main style={{ 
-        padding: '120px 2rem 2rem', 
+        padding: '120px 1rem 1rem', 
         minHeight: '80vh',
         background: '#F1EFEC'
       }}>
         <div style={{ 
-          maxWidth: '800px', 
+          maxWidth: '1000px', 
           margin: '0 auto', 
           background: '#FFFFFF',
           borderRadius: '20px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
           overflow: 'hidden',
-          height: '70vh',
+          height: '80vh',
           display: 'flex',
           flexDirection: 'column'
         }}>
@@ -147,9 +147,9 @@ const GeneralChat = () => {
             textAlign: 'center'
           }}>
             <h2 style={{color:"white", margin: 0, fontSize: '1.5rem' }}>Tax Assistant</h2>
-            <p style={{color:"white", margin: '0.5rem 0 0 0', opacity: 0.9, fontSize: '0.9rem' }}>
+            {/* <p style={{color:"white", margin: '0.5rem 0 0 0', opacity: 0.9, fontSize: '0.9rem' }}>
               Ask me anything about taxes, laws, deductions, or filing procedures
-            </p>
+            </p> */}
           </div>
 
           {/* Messages Container */}
@@ -163,10 +163,11 @@ const GeneralChat = () => {
               <div key={message.id} style={{ 
                 display: 'flex', 
                 justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start',
-                marginBottom: '1rem'
+                marginBottom: '1rem',
+                fontSize: '1.05rem'
               }}>
                 <div style={{
-                  maxWidth: '80%',
+                  maxWidth: '70%',
                   padding: '12px 16px',
                   borderRadius: '18px',
                   background: message.sender === 'user' ? '#123458' : '#F1EFEC',
@@ -177,7 +178,7 @@ const GeneralChat = () => {
                       src={message.image} 
                       alt="Uploaded" 
                       style={{ 
-                        maxWidth: '200px', 
+                        maxWidth: '180px', 
                         borderRadius: '8px', 
                         marginBottom: '8px',
                         display: 'block'
